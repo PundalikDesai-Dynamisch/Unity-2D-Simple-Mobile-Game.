@@ -6,16 +6,33 @@ using UnityEngine;
 
 public class UnityMessageManager : MonoBehaviour
 {
-    public static UnityMessageManager Instance { get; private set; }
+    private static UnityMessageManager _instance;
+    public static UnityMessageManager Instance 
+    { 
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindObjectOfType<UnityMessageManager>();
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("UnityMessageManager");
+                    _instance = go.AddComponent<UnityMessageManager>();
+                    DontDestroyOnLoad(go);
+                }
+            }
+            return _instance;
+        }
+    }
 
     private void Awake()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
-            Instance = this;
+            _instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (_instance != this)
         {
             Destroy(gameObject);
         }
